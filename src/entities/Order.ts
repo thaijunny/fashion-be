@@ -27,6 +27,15 @@ export class Order {
   @Column({ type: 'text', nullable: true })
   shipping_address: string;
 
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  full_name: string;
+
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  phone_number: string;
+
+  @Column({ type: 'varchar', length: 50, default: 'cod' })
+  payment_method: string;
+
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
 

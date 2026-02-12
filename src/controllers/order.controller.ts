@@ -9,7 +9,7 @@ const orderItemRepo = () => AppDataSource.getRepository(OrderItem);
 const cartRepo = () => AppDataSource.getRepository(CartItem);
 
 export const createOrder = async (req: any, res: Response) => {
-  const { shipping_address, total_amount } = req.body;
+  const { shipping_address, full_name, phone_number, payment_method, total_amount } = req.body;
   const user_id = req.user.id;
 
   const queryRunner = AppDataSource.createQueryRunner();
@@ -17,14 +17,26 @@ export const createOrder = async (req: any, res: Response) => {
   await queryRunner.startTransaction();
 
   try {
-    // 1. Get cart items
-    const cartItems = await cartRepo().findBy({ user_id });
+    // 1. Get cart items with product details
+    const cartItems = await cartRepo().find({
+      where: { user_id },
+      relations: ['product'],
+    });
+
     if (cartItems.length === 0) {
-      throw new Error('Cart is empty');
+      throw new Error('Giỏ hàng của bạn đang trống');
     }
 
     // 2. Create order
-    const order = orderRepo().create({ user_id, total_amount, shipping_address });
+    const order = orderRepo().create({
+      user_id,
+      total_amount,
+      shipping_address,
+      full_name,
+      phone_number,
+      payment_method: payment_method || 'cod',
+      status: 'pending',
+    });
     const savedOrder = await queryRunner.manager.save(order);
 
     // 3. Create order items
@@ -33,7 +45,7 @@ export const createOrder = async (req: any, res: Response) => {
         order_id: savedOrder.id,
         project_id: item.project_id,
         quantity: item.quantity,
-        unit_price: total_amount / cartItems.length,
+        unit_price: item.product?.price || 0,
       });
       await queryRunner.manager.save(orderItem);
     }
@@ -42,10 +54,14 @@ export const createOrder = async (req: any, res: Response) => {
     await queryRunner.manager.delete(CartItem, { user_id });
 
     await queryRunner.commitTransaction();
-    res.status(201).json({ message: 'Order created successfully', order_id: savedOrder.id });
+    res.status(201).json({
+      success: true,
+      message: 'Đặt hàng thành công!',
+      order_id: savedOrder.id
+    });
   } catch (error: any) {
     await queryRunner.rollbackTransaction();
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ success: false, message: error.message });
   } finally {
     await queryRunner.release();
   }
