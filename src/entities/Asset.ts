@@ -14,7 +14,7 @@ export class Asset {
   name: string;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  type: string; // 'sticker', 'pattern', 'icon'
+  type: string; // 'sticker', 'pattern', 'icon', 'shape', 'font'
 
   @Column({ type: 'text' })
   url: string;

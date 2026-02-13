@@ -30,6 +30,9 @@ export class CartItem {
   @Column({ type: 'varchar', length: 20, nullable: true })
   color: string;
 
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  material: string;
+
   @Column({ type: 'int', default: 1 })
   quantity: number;
 

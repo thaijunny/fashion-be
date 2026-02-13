@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { User } from './User.js';
 import { Product } from './Product.js';
+import { GarmentTemplate } from './GarmentTemplate.js';
 
 @Entity('projects')
 export class Project {
@@ -19,6 +20,9 @@ export class Project {
 
   @Column({ type: 'uuid', nullable: true })
   product_id: string;
+
+  @Column({ type: 'uuid', nullable: true })
+  garment_template_id: string;
 
   @Column({ type: 'varchar', length: 255 })
   name: string;
@@ -38,6 +42,9 @@ export class Project {
   @Column({ type: 'varchar', length: 20, default: 'L' })
   garment_size: string;
 
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  garment_material: string;
+
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
 
@@ -48,4 +55,8 @@ export class Project {
   @ManyToOne(() => Product, (product) => product.projects)
   @JoinColumn({ name: 'product_id' })
   product: Product;
+
+  @ManyToOne(() => GarmentTemplate, { nullable: true })
+  @JoinColumn({ name: 'garment_template_id' })
+  garment_template: GarmentTemplate;
 }

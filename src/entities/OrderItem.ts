@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Order } from './Order.js';
 import { Project } from './Project.js';
+import { Product } from './Product.js';
 
 @Entity('order_items')
 export class OrderItem {
@@ -18,6 +19,18 @@ export class OrderItem {
 
   @Column({ type: 'uuid', nullable: true })
   project_id: string;
+
+  @Column({ type: 'uuid', nullable: true })
+  product_id: string;
+
+  @Column({ type: 'varchar', length: 10, nullable: true })
+  size: string;
+
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  color: string;
+
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  material: string;
 
   @Column({ type: 'int', default: 1 })
   quantity: number;
@@ -32,4 +45,8 @@ export class OrderItem {
   @ManyToOne(() => Project)
   @JoinColumn({ name: 'project_id' })
   project: Project;
+
+  @ManyToOne(() => Product)
+  @JoinColumn({ name: 'product_id' })
+  product: Product;
 }

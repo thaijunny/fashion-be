@@ -1,7 +1,15 @@
 export { User } from './User.js';
 export { Product } from './Product.js';
+export { Category } from './Category.js';
+export { Size } from './Size.js';
+export { Color } from './Color.js';
+export { Material } from './Material.js';
+export { ProductSize } from './ProductSize.js';
+export { ProductColor } from './ProductColor.js';
+export { ProductMaterial } from './ProductMaterial.js';
 export { Project } from './Project.js';
 export { Order } from './Order.js';
 export { OrderItem } from './OrderItem.js';
 export { CartItem } from './CartItem.js';
 export { Asset } from './Asset.js';
+export * from './StudioColor.js';

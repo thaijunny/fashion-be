@@ -32,6 +32,12 @@ export class User {
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
 
+  @Column({ type: 'jsonb', default: [] })
+  uploaded_images: string[];
+
+  @Column({ type: 'jsonb', default: [] })
+  ai_images: string[];
+
   @OneToMany(() => Project, (project) => project.user)
   projects: Project[];
 

@@ -41,3 +41,25 @@ export const isAdmin = (req: any, res: Response, next: NextFunction) => {
     res.status(403).json({ message: 'Not authorized as an admin' });
   }
 };
+
+export const optionalProtect = async (req: any, res: Response, next: NextFunction) => {
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    try {
+      const token = req.headers.authorization.split(' ')[1];
+      const decoded: any = verifyToken(token);
+
+      const userRepo = AppDataSource.getRepository(User);
+      const user = await userRepo.findOne({
+        where: { id: decoded.id },
+        select: ['id', 'email', 'role'],
+      });
+
+      if (user) {
+        req.user = user;
+      }
+    } catch (error) {
+      // Silent fail for optional protect
+    }
+  }
+  next();
+};

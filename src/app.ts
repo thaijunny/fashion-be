@@ -11,7 +11,10 @@ import projectRoutes from './routes/project.routes.js';
 import productRoutes from './routes/product.routes.js';
 import cartRoutes from './routes/cart.routes.js';
 import orderRoutes from './routes/order.routes.js';
-import assetRoutes from './routes/asset.routes.js';
+import studioRoutes from './routes/studio.routes.js';
+import categoryRoutes from './routes/category.routes.js';
+import attributeRoutes from './routes/attribute.routes.js';
+import uploadRoutes from './routes/upload.routes.js';
 
 dotenv.config();
 
@@ -32,7 +35,11 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/assets', assetRoutes);
+app.use('/api/studio', studioRoutes);
+app.use('/api/assets', studioRoutes); // Keep compatibility for now
+app.use('/api/categories', categoryRoutes);
+app.use('/api', attributeRoutes);
+app.use('/api/upload', uploadRoutes);
 
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'ok', message: 'Server is running' });

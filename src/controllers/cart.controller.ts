@@ -12,15 +12,15 @@ const toFrontendItem = (item: CartItem) => ({
   quantity: item.quantity,
   size: item.size,
   color: item.color,
+  material: item.material,
+  project_id: item.project_id,
   product: item.product ? {
     id: item.product.id,
     name: item.product.name,
-    price: Number(item.product.price),
-    originalPrice: item.product.original_price ? Number(item.product.original_price) : undefined,
-    images: item.product.images || [],
-    category: item.product.category,
+    price: item.product.price,
+    images: item.product.images,
+    category: item.product.categoryEntity?.name,
   } : null,
-  project_id: item.project_id,
 });
 
 export const getCart = async (req: any, res: Response) => {
@@ -29,14 +29,40 @@ export const getCart = async (req: any, res: Response) => {
   try {
     const items = await cartRepo().find({
       where: { user_id },
-      relations: ['product'],
+      relations: [
+        'product',
+        'product.categoryEntity',
+        'product.productSizes',
+        'product.productSizes.size',
+        'product.productColors',
+        'product.productColors.color',
+        'product.productMaterials',
+        'product.productMaterials.material'
+      ],
       order: { created_at: 'DESC' },
     });
 
     const cartItems = items.map(toFrontendItem);
     const total = items.reduce((sum, item) => {
-      const price = item.product ? Number(item.product.price) : 0;
-      return sum + price * item.quantity;
+      if (!item.product) return sum;
+
+      let price = Number(item.product.price);
+
+      // Add adjustments from junctions
+      if (item.size) {
+        const sizeAdj = item.product.productSizes?.find(ps => ps.size?.name === item.size);
+        if (sizeAdj) price += Number(sizeAdj.price_adjustment);
+      }
+      if (item.color) {
+        const colorAdj = item.product.productColors?.find(pc => pc.color?.hex_code === item.color);
+        if (colorAdj) price += Number(colorAdj.price_adjustment);
+      }
+      if (item.material) {
+        const matAdj = item.product.productMaterials?.find(pm => pm.material?.name === item.material);
+        if (matAdj) price += Number(matAdj.price_adjustment);
+      }
+
+      return sum + (price * item.quantity);
     }, 0);
 
     res.status(200).json({ items: cartItems, total, itemCount: items.reduce((s, i) => s + i.quantity, 0) });
@@ -46,7 +72,7 @@ export const getCart = async (req: any, res: Response) => {
 };
 
 export const addToCart = async (req: any, res: Response) => {
-  const { product_id, project_id, size, color, quantity = 1 } = req.body;
+  const { product_id, project_id, size, color, material, quantity = 1 } = req.body;
   const user_id = req.user.id;
 
   try {
@@ -54,23 +80,20 @@ export const addToCart = async (req: any, res: Response) => {
     if (product_id) {
       const product = await productRepo().findOneBy({ id: product_id });
       if (!product) return res.status(404).json({ message: 'Product not found' });
-    }
 
-    // Check for existing item with same product+size+color
-    if (product_id) {
-      const existing = await cartRepo().findOneBy({ user_id, product_id, size, color });
+      // Check for existing item with same product+size+color+material
+      const existing = await cartRepo().findOneBy({ user_id, product_id, size, color, material });
       if (existing) {
         existing.quantity += quantity;
         const updated = await cartRepo().save(existing);
-        // Re-fetch with relations
-        const full = await cartRepo().findOne({ where: { id: updated.id }, relations: ['product'] });
+        const full = await cartRepo().findOne({ where: { id: updated.id }, relations: ['product', 'product.categoryEntity'] });
         return res.status(200).json(toFrontendItem(full!));
       }
     }
 
-    const item = cartRepo().create({ user_id, product_id, project_id, size, color, quantity });
+    const item = cartRepo().create({ user_id, product_id, project_id, size, color, material, quantity });
     await cartRepo().save(item);
-    const full = await cartRepo().findOne({ where: { id: item.id }, relations: ['product'] });
+    const full = await cartRepo().findOne({ where: { id: item.id }, relations: ['product', 'product.categoryEntity'] });
     res.status(201).json(toFrontendItem(full!));
   } catch (error: any) {
     res.status(500).json({ message: error.message });
