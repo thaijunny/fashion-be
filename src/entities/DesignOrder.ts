@@ -53,6 +53,9 @@ export class DesignOrder {
     @Column({ type: 'text', nullable: true })
     note: string;
 
+    @Column({ type: 'varchar', length: 50, default: 'cod' })
+    payment_method: string;
+
     @CreateDateColumn({ type: 'timestamptz' })
     created_at: Date;
 

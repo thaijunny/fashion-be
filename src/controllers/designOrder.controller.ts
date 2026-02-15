@@ -16,7 +16,7 @@ const projectRepo = () => AppDataSource.getRepository(Project);
 export const createDesignOrder = async (req: Request, res: Response) => {
     try {
         const user_id = (req as any).user.id;
-        const { project_id, garment_size, garment_color, quantity, shipping_address, full_name, phone_number, note } = req.body;
+        const { project_id, garment_size, garment_color, quantity, shipping_address, full_name, phone_number, note, payment_method } = req.body;
 
         if (!project_id) return res.status(400).json({ message: 'Thiếu project_id' });
 
@@ -47,6 +47,7 @@ export const createDesignOrder = async (req: Request, res: Response) => {
             full_name,
             phone_number,
             note,
+            payment_method: payment_method || 'cod',
         });
         const saved = await designOrderRepo().save(order);
         res.status(201).json(saved);
