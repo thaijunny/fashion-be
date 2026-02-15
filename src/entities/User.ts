@@ -29,6 +29,9 @@ export class User {
   @Column({ type: 'varchar', length: 20, default: 'user' })
   role: string;
 
+  @Column({ type: 'boolean', default: false })
+  is_blocked: boolean;
+
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
 

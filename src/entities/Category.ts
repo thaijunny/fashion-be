@@ -21,6 +21,9 @@ export class Category {
     @Column({ type: 'varchar', length: 500, nullable: true })
     image: string;
 
+    @Column({ type: 'varchar', length: 500, nullable: true })
+    size_guide_image: string;
+
     @CreateDateColumn({ type: 'timestamptz' })
     created_at: Date;
 

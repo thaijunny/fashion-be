@@ -12,6 +12,7 @@ import { Material } from '../entities/Material.js';
 import { ProductSize } from '../entities/ProductSize.js';
 import { ProductColor } from '../entities/ProductColor.js';
 import { ProductMaterial } from '../entities/ProductMaterial.js';
+import { SystemSetting } from '../entities/SystemSetting.js';
 import bcrypt from 'bcryptjs';
 import https from 'https';
 import fs from 'fs';
@@ -669,6 +670,27 @@ async function seed() {
       if (!item) {
         await templateRepo.save(templateRepo.create(t));
         console.log(`  ✓ Garment Template: ${t.name}`);
+      }
+    }
+
+    // ──────────────── 8. SEED SYSTEM SETTINGS ────────────────
+    const settingRepo = AppDataSource.getRepository(SystemSetting);
+    const defaultSettings = [
+      { key: 'marquee_content', value: '🔥 FREESHIP CHO ĐƠN HÀNG TỪ 500K • GIẢM 10% CHO THÀNH VIÊN MỚI • THIẾT KẾ RIÊNG TẠI DESIGN STUDIO 🔥' },
+      { key: 'phone_number', value: '0901 234 567' },
+      { key: 'email', value: 'hello@untyped.vn' },
+      { key: 'address', value: '123 Nguyễn Huệ, Q.1, TP.HCM' },
+      { key: 'facebook_link', value: 'https://facebook.com/untyped' },
+      { key: 'youtube_link', value: 'https://youtube.com/@untyped' },
+      { key: 'instagram_link', value: 'https://instagram.com/untyped' },
+      { key: 'banner_image', value: '' },
+    ];
+
+    for (const s of defaultSettings) {
+      let item = await settingRepo.findOneBy({ key: s.key });
+      if (!item) {
+        await settingRepo.save(settingRepo.create(s));
+        console.log(`  ✓ System Setting: ${s.key}`);
       }
     }
 

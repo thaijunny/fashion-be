@@ -13,3 +13,5 @@ export { OrderItem } from './OrderItem.js';
 export { CartItem } from './CartItem.js';
 export { Asset } from './Asset.js';
 export * from './StudioColor.js';
+export { DesignOrder } from './DesignOrder.js';
+export { SystemSetting } from './SystemSetting.js';

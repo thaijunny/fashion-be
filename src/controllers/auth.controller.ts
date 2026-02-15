@@ -49,6 +49,10 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
+    if (user.is_blocked) {
+      return res.status(403).json({ message: 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ admin.' });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
@@ -69,7 +73,7 @@ export const getMe = async (req: any, res: Response) => {
   try {
     const user = await userRepo().findOne({
       where: { id: req.user.id },
-      select: ['id', 'email', 'full_name', 'role', 'avatar_url'],
+      select: ['id', 'email', 'full_name', 'role', 'avatar_url', 'is_blocked'],
     });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -108,6 +112,10 @@ export const googleLogin = async (req: Request, res: Response) => {
         role: 'user',
       });
       await userRepo().save(user);
+    }
+
+    if (user.is_blocked) {
+      return res.status(403).json({ message: 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ admin.' });
     }
 
     const token = generateToken(user.id);

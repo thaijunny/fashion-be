@@ -29,6 +29,12 @@ export class GarmentTemplate {
     @Column({ type: 'jsonb' })
     back_design_area: { left: number; top: number; right: number; bottom: number };
 
+    @Column({ type: 'decimal', precision: 12, scale: 0, default: 0 })
+    base_price: number;
+
+    @Column({ type: 'jsonb', default: '{}' })
+    size_prices: Record<string, number>; // e.g. { "S": 120000, "M": 130000, "L": 140000 }
+
     @Column({ type: 'boolean', default: true })
     is_active: boolean;
 

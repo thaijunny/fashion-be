@@ -15,6 +15,9 @@ import studioRoutes from './routes/studio.routes.js';
 import categoryRoutes from './routes/category.routes.js';
 import attributeRoutes from './routes/attribute.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
+import designOrderRoutes from './routes/designOrder.routes.js';
+import userRoutes from './routes/user.routes.js';
+import settingRoutes from './routes/setting.routes.js';
 
 dotenv.config();
 
@@ -40,6 +43,9 @@ app.use('/api/assets', studioRoutes); // Keep compatibility for now
 app.use('/api/categories', categoryRoutes);
 app.use('/api', attributeRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/design-orders', designOrderRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/settings', settingRoutes);
 
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'ok', message: 'Server is running' });

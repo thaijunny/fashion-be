@@ -31,7 +31,7 @@ export const createStudioColor = async (req: Request, res: Response) => {
 
 export const updateStudioColor = async (req: Request, res: Response) => {
     try {
-        const item = await studioColorRepo().findOneBy({ id: req.params.id });
+        const item = await studioColorRepo().findOneBy({ id: req.params.id as string });
         if (!item) return res.status(404).json({ message: 'Không tìm thấy' });
         studioColorRepo().merge(item, req.body);
         const updated = await studioColorRepo().save(item);
@@ -73,7 +73,7 @@ export const createAsset = async (req: Request, res: Response) => {
 
 export const updateAsset = async (req: Request, res: Response) => {
     try {
-        const item = await assetRepo().findOneBy({ id: req.params.id });
+        const item = await assetRepo().findOneBy({ id: req.params.id as string });
         if (!item) return res.status(404).json({ message: 'Không tìm thấy' });
         assetRepo().merge(item, req.body);
         const updated = await assetRepo().save(item);
@@ -111,7 +111,7 @@ export const createTemplate = async (req: Request, res: Response) => {
 
 export const updateTemplate = async (req: Request, res: Response) => {
     try {
-        const item = await templateRepo().findOneBy({ id: req.params.id });
+        const item = await templateRepo().findOneBy({ id: req.params.id as string });
         if (!item) return res.status(404).json({ message: 'Không tìm thấy' });
         templateRepo().merge(item, req.body);
         const updated = await templateRepo().save(item);

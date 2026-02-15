@@ -6,7 +6,9 @@ import {
   updateProject,
   deleteProject,
   getAllProjectsAdmin,
-  getOrderedProjectsAdmin
+  getOrderedProjectsAdmin,
+  getProjectByIdAdmin,
+  updateProjectAdmin
 } from '../controllers/project.controller.js';
 import { protect, isAdmin } from '../middleware/auth.middleware.js';
 
@@ -15,6 +17,8 @@ const router = Router();
 // Admin routes (put before /:id to avoid conflict)
 router.get('/admin/all', protect, isAdmin, getAllProjectsAdmin);
 router.get('/admin/ordered', protect, isAdmin, getOrderedProjectsAdmin);
+router.get('/admin/:id', protect, isAdmin, getProjectByIdAdmin);
+router.put('/admin/:id', protect, isAdmin, updateProjectAdmin);
 
 router.use(protect); // All other project routes require authentication
 

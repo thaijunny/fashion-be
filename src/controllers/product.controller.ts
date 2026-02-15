@@ -20,7 +20,12 @@ const toFrontendProduct = (p: Product) => ({
   originalPrice: p.original_price ? Number(p.original_price) : undefined,
   images: p.images || [],
   category: p.categoryEntity
-    ? { id: p.categoryEntity.id, name: p.categoryEntity.name, slug: p.categoryEntity.slug }
+    ? {
+      id: p.categoryEntity.id,
+      name: p.categoryEntity.name,
+      slug: p.categoryEntity.slug,
+      size_guide_image: p.categoryEntity.size_guide_image
+    }
     : null,
   sizes: (p.productSizes || []).map(ps => ({
     id: ps.size.id,
