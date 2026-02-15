@@ -19,6 +19,7 @@ import { StudioColor } from '../entities/StudioColor.js';
 import { GarmentTemplate } from '../entities/GarmentTemplate.js';
 import { DesignOrder } from '../entities/DesignOrder.js';
 import { SystemSetting } from '../entities/SystemSetting.js';
+import { AiGeneration } from '../entities/AiGeneration.js';
 
 dotenv.config();
 
@@ -36,6 +37,6 @@ export const AppDataSource = new DataSource({
     Size, Color, Material,
     ProductSize, ProductColor, ProductMaterial,
     Project, Order, OrderItem, CartItem, Asset, StudioColor, GarmentTemplate,
-    DesignOrder, SystemSetting,
+    DesignOrder, SystemSetting, AiGeneration,
   ],
 });

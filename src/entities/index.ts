@@ -15,3 +15,4 @@ export { Asset } from './Asset.js';
 export * from './StudioColor.js';
 export { DesignOrder } from './DesignOrder.js';
 export { SystemSetting } from './SystemSetting.js';
+export { AiGeneration } from './AiGeneration.js';

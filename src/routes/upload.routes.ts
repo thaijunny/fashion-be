@@ -19,7 +19,15 @@ fs.mkdirSync(PRODUCTS_DIR, { recursive: true });
 const storage = multer.diskStorage({
     destination: (req, _file, cb) => {
         const folder = req.query.folder === 'products' ? 'products' : 'studio';
-        cb(null, path.join(BASE_UPLOAD_DIR, folder));
+        if (folder === 'studio') {
+            // Store in user-specific folder
+            const userId = (req as any).user?.id || 'anonymous';
+            const userDir = path.join(STUDIO_DIR, userId);
+            fs.mkdirSync(userDir, { recursive: true });
+            cb(null, userDir);
+        } else {
+            cb(null, PRODUCTS_DIR);
+        }
     },
     filename: (_req, file, cb) => {
         const ext = path.extname(file.originalname);
@@ -48,8 +56,14 @@ router.post('/', protect, upload.single('file'), (req: Request, res: Response) =
         return res.status(400).json({ message: 'No file uploaded' });
     }
     const folder = req.query.folder === 'products' ? 'products' : 'studio';
-    const url = `/uploads/${folder}/${req.file.filename}`;
-    res.json({ url, filename: req.file.filename });
+    if (folder === 'studio') {
+        const userId = (req as any).user?.id || 'anonymous';
+        const url = `/uploads/studio/${userId}/${req.file.filename}`;
+        res.json({ url, filename: req.file.filename });
+    } else {
+        const url = `/uploads/products/${req.file.filename}`;
+        res.json({ url, filename: req.file.filename });
+    }
 });
 
 export default router;
