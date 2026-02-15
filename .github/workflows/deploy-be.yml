@@ -30,7 +30,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "dist/,package.json,package-lock.json,ecosystem.config.cjs"
+          source: "dist/,package.json,package-lock.json,ecosystem.config.cjs,uploads/"
           target: "/var/www/fashion-store/be"
 
       - name: Post-deployment restart
@@ -42,4 +42,6 @@ jobs:
           script: |
             cd /var/www/fashion-store/be
             npm install --production
+            chown -R www-data:www-data uploads || true
+            chmod -R 755 uploads || true
             pm2 reload ecosystem.config.cjs --env production || pm2 start ecosystem.config.cjs --env production
