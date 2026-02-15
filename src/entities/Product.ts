@@ -6,6 +6,7 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
+  Relation,
 } from 'typeorm';
 import { Project } from './Project.js';
 import { Category } from './Category.js';
@@ -58,14 +59,14 @@ export class Product {
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
 
-  @OneToMany(() => ProductSize, (ps) => ps.product, { cascade: true })
-  productSizes: ProductSize[];
+  @OneToMany('ProductSize', 'product', { cascade: true })
+  productSizes: Relation<ProductSize>[];
 
-  @OneToMany(() => ProductColor, (pc) => pc.product, { cascade: true })
-  productColors: ProductColor[];
+  @OneToMany('ProductColor', 'product', { cascade: true })
+  productColors: Relation<ProductColor>[];
 
-  @OneToMany(() => ProductMaterial, (pm) => pm.product, { cascade: true })
-  productMaterials: ProductMaterial[];
+  @OneToMany('ProductMaterial', 'product', { cascade: true })
+  productMaterials: Relation<ProductMaterial>[];
 
   @OneToMany(() => Project, (project) => project.product)
   projects: Project[];
