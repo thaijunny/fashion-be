@@ -8,11 +8,11 @@ import {
   JoinColumn,
   Relation,
 } from 'typeorm';
-import { Project } from './Project.js';
-import { Category } from './Category.js';
-import { ProductSize } from './ProductSize.js';
-import { ProductColor } from './ProductColor.js';
-import { ProductMaterial } from './ProductMaterial.js';
+import type { Project } from './Project.js';
+import type { Category } from './Category.js';
+import type { ProductSize } from './ProductSize.js';
+import type { ProductColor } from './ProductColor.js';
+import type { ProductMaterial } from './ProductMaterial.js';
 
 @Entity('products')
 export class Product {
@@ -22,9 +22,9 @@ export class Product {
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @ManyToOne(() => Category, (cat) => cat.products, { nullable: true, eager: true })
+  @ManyToOne('Category', 'products', { nullable: true, eager: true })
   @JoinColumn({ name: 'category_id' })
-  categoryEntity: Category;
+  categoryEntity: Relation<Category>;
 
   @Column({ type: 'uuid', nullable: true })
   category_id: string;
@@ -68,6 +68,6 @@ export class Product {
   @OneToMany('ProductMaterial', 'product', { cascade: true })
   productMaterials: Relation<ProductMaterial>[];
 
-  @OneToMany(() => Project, (project) => project.product)
-  projects: Project[];
+  @OneToMany('Project', 'product')
+  projects: Relation<Project>[];
 }

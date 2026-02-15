@@ -6,10 +6,11 @@ import {
     UpdateDateColumn,
     ManyToOne,
     JoinColumn,
+    Relation,
 } from 'typeorm';
-import { User } from './User.js';
-import { Project } from './Project.js';
-import { GarmentTemplate } from './GarmentTemplate.js';
+import type { User } from './User.js';
+import type { Project } from './Project.js';
+import type { GarmentTemplate } from './GarmentTemplate.js';
 
 @Entity('design_orders')
 export class DesignOrder {
@@ -58,15 +59,15 @@ export class DesignOrder {
     @UpdateDateColumn({ type: 'timestamptz' })
     updated_at: Date;
 
-    @ManyToOne(() => User, { onDelete: 'CASCADE' })
+    @ManyToOne('User', { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'user_id' })
-    user: User;
+    user: Relation<User>;
 
-    @ManyToOne(() => Project, { onDelete: 'SET NULL' })
+    @ManyToOne('Project', { onDelete: 'SET NULL' })
     @JoinColumn({ name: 'project_id' })
-    project: Project;
+    project: Relation<Project>;
 
-    @ManyToOne(() => GarmentTemplate, { nullable: true })
+    @ManyToOne('GarmentTemplate', { nullable: true })
     @JoinColumn({ name: 'garment_template_id' })
-    garment_template: GarmentTemplate;
+    garment_template: Relation<GarmentTemplate>;
 }

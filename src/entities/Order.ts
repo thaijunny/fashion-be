@@ -6,9 +6,10 @@ import {
   ManyToOne,
   OneToMany,
   JoinColumn,
+  Relation,
 } from 'typeorm';
-import { User } from './User.js';
-import { OrderItem } from './OrderItem.js';
+import type { User } from './User.js';
+import type { OrderItem } from './OrderItem.js';
 
 @Entity('orders')
 export class Order {
@@ -39,10 +40,10 @@ export class Order {
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
 
-  @ManyToOne(() => User, (user) => user.orders)
+  @ManyToOne('User', 'orders')
   @JoinColumn({ name: 'user_id' })
-  user: User;
+  user: Relation<User>;
 
-  @OneToMany(() => OrderItem, (item) => item.order)
-  items: OrderItem[];
+  @OneToMany('OrderItem', 'order')
+  items: Relation<OrderItem>[];
 }

@@ -5,10 +5,11 @@ import {
   CreateDateColumn,
   ManyToOne,
   JoinColumn,
+  Relation,
 } from 'typeorm';
-import { User } from './User.js';
-import { Product } from './Product.js';
-import { Project } from './Project.js';
+import type { User } from './User.js';
+import type { Product } from './Product.js';
+import type { Project } from './Project.js';
 
 @Entity('cart_items')
 export class CartItem {
@@ -39,15 +40,15 @@ export class CartItem {
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
 
-  @ManyToOne(() => User, (user) => user.cart_items, { onDelete: 'CASCADE' })
+  @ManyToOne('User', 'cart_items', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
-  user: User;
+  user: Relation<User>;
 
-  @ManyToOne(() => Product, { onDelete: 'CASCADE', nullable: true })
+  @ManyToOne('Product', { onDelete: 'CASCADE', nullable: true })
   @JoinColumn({ name: 'product_id' })
-  product: Product;
+  product: Relation<Product>;
 
-  @ManyToOne(() => Project, { onDelete: 'CASCADE', nullable: true })
+  @ManyToOne('Project', { onDelete: 'CASCADE', nullable: true })
   @JoinColumn({ name: 'project_id' })
-  project: Project;
+  project: Relation<Project>;
 }

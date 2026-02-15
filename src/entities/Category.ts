@@ -4,8 +4,9 @@ import {
     Column,
     CreateDateColumn,
     OneToMany,
+    Relation,
 } from 'typeorm';
-import { Product } from './Product.js';
+import type { Product } from './Product.js';
 
 @Entity('categories')
 export class Category {
@@ -27,6 +28,6 @@ export class Category {
     @CreateDateColumn({ type: 'timestamptz' })
     created_at: Date;
 
-    @OneToMany(() => Product, (product) => product.categoryEntity)
-    products: Product[];
+    @OneToMany('Product', 'categoryEntity')
+    products: Relation<Product>[];
 }

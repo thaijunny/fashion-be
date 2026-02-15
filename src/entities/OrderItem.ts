@@ -4,10 +4,11 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  Relation,
 } from 'typeorm';
-import { Order } from './Order.js';
-import { Project } from './Project.js';
-import { Product } from './Product.js';
+import type { Order } from './Order.js';
+import type { Project } from './Project.js';
+import type { Product } from './Product.js';
 
 @Entity('order_items')
 export class OrderItem {
@@ -38,15 +39,15 @@ export class OrderItem {
   @Column({ type: 'decimal', precision: 12, scale: 2 })
   unit_price: number;
 
-  @ManyToOne(() => Order, (order) => order.items, { onDelete: 'CASCADE' })
+  @ManyToOne('Order', 'items', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'order_id' })
-  order: Order;
+  order: Relation<Order>;
 
-  @ManyToOne(() => Project)
+  @ManyToOne('Project')
   @JoinColumn({ name: 'project_id' })
-  project: Project;
+  project: Relation<Project>;
 
-  @ManyToOne(() => Product)
+  @ManyToOne('Product')
   @JoinColumn({ name: 'product_id' })
-  product: Product;
+  product: Relation<Product>;
 }
