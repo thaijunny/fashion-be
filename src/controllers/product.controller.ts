@@ -133,27 +133,33 @@ export const createProduct = async (req: Request, res: Response) => {
   } = req.body;
   try {
     const product = productRepo().create({
-      name, category_id, price, original_price, images,
+      name, price, original_price, images,
       description, is_new, is_best_seller, is_on_sale, configuration,
-    });
+    }) as Product;
+
+    // Explicitly set category if provided
+    if (category_id) {
+      (product as any).category_id = category_id;
+    }
+
     await productRepo().save(product);
 
     // Save junction rows
     if (sizes?.length) {
       const sizeRows = sizes.map((s: any) =>
-        productSizeRepo().create({ product_id: product.id, size_id: s.sizeId, price_adjustment: s.priceAdjustment || 0 })
+        productSizeRepo().create({ product_id: product.id, size_id: s.sizeId, price_adjustment: s.price_adjustment || s.priceAdjustment || 0 })
       );
       await productSizeRepo().save(sizeRows);
     }
     if (colors?.length) {
       const colorRows = colors.map((c: any) =>
-        productColorRepo().create({ product_id: product.id, color_id: c.colorId, price_adjustment: c.priceAdjustment || 0 })
+        productColorRepo().create({ product_id: product.id, color_id: c.colorId, price_adjustment: c.price_adjustment || c.priceAdjustment || 0 })
       );
       await productColorRepo().save(colorRows);
     }
     if (materials?.length) {
       const matRows = materials.map((m: any) =>
-        productMaterialRepo().create({ product_id: product.id, material_id: m.materialId, price_adjustment: m.priceAdjustment || 0 })
+        productMaterialRepo().create({ product_id: product.id, material_id: m.materialId, price_adjustment: m.price_adjustment || m.priceAdjustment || 0 })
       );
       await productMaterialRepo().save(matRows);
     }
@@ -178,10 +184,16 @@ export const updateProduct = async (req: Request, res: Response) => {
     });
     if (!product) return res.status(404).json({ message: 'Product not found' });
 
-    const { sizes, colors, materials, ...rest } = req.body;
+    const { sizes, colors, materials, category_id, ...rest } = req.body;
 
     // Update scalar fields
     productRepo().merge(product, rest);
+
+    // Explicitly update category_id if provided
+    if (category_id !== undefined) {
+      (product as any).category_id = category_id;
+    }
+
     await productRepo().save(product);
 
     // Replace junction rows if provided
@@ -189,7 +201,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       await productSizeRepo().delete({ product_id: id });
       if (sizes.length) {
         const rows = sizes.map((s: any) =>
-          productSizeRepo().create({ product_id: id, size_id: s.sizeId, price_adjustment: s.priceAdjustment || 0 })
+          productSizeRepo().create({ product_id: id, size_id: s.sizeId, price_adjustment: s.price_adjustment || s.priceAdjustment || 0 })
         );
         await productSizeRepo().save(rows);
       }
@@ -198,7 +210,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       await productColorRepo().delete({ product_id: id });
       if (colors.length) {
         const rows = colors.map((c: any) =>
-          productColorRepo().create({ product_id: id, color_id: c.colorId, price_adjustment: c.priceAdjustment || 0 })
+          productColorRepo().create({ product_id: id, color_id: c.colorId, price_adjustment: c.price_adjustment || c.priceAdjustment || 0 })
         );
         await productColorRepo().save(rows);
       }
@@ -207,7 +219,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       await productMaterialRepo().delete({ product_id: id });
       if (materials.length) {
         const rows = materials.map((m: any) =>
-          productMaterialRepo().create({ product_id: id, material_id: m.materialId, price_adjustment: m.priceAdjustment || 0 })
+          productMaterialRepo().create({ product_id: id, material_id: m.materialId, price_adjustment: m.price_adjustment || m.priceAdjustment || 0 })
         );
         await productMaterialRepo().save(rows);
       }
