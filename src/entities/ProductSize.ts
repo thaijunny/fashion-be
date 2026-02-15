@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Relation } from 'typeorm';
 import { Product } from './Product.js';
 import { Size } from './Size.js';
 
@@ -18,7 +18,7 @@ export class ProductSize {
 
     @ManyToOne(() => Product, (p) => p.productSizes, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'product_id' })
-    product: Product;
+    product: Relation<Product>;
 
     @ManyToOne(() => Size, (s) => s.productSizes, { eager: true, onDelete: 'CASCADE' })
     @JoinColumn({ name: 'size_id' })
