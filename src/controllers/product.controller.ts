@@ -133,14 +133,9 @@ export const createProduct = async (req: Request, res: Response) => {
   } = req.body;
   try {
     const product = productRepo().create({
-      name, price, original_price, images,
+      name, category_id, price, original_price, images,
       description, is_new, is_best_seller, is_on_sale, configuration,
-    }) as Product;
-
-    // Explicitly set category if provided
-    if (category_id) {
-      (product as any).category_id = category_id;
-    }
+    });
 
     await productRepo().save(product);
 
@@ -187,12 +182,7 @@ export const updateProduct = async (req: Request, res: Response) => {
     const { sizes, colors, materials, category_id, ...rest } = req.body;
 
     // Update scalar fields
-    productRepo().merge(product, rest);
-
-    // Explicitly update category_id if provided
-    if (category_id !== undefined) {
-      (product as any).category_id = category_id;
-    }
+    productRepo().merge(product, { ...rest, category_id });
 
     await productRepo().save(product);
 

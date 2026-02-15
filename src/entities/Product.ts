@@ -26,6 +26,9 @@ export class Product {
   @JoinColumn({ name: 'category_id' })
   categoryEntity: Relation<Category>;
 
+  @Column({ type: 'uuid', nullable: true })
+  category_id: string;
+
   @Column({ type: 'decimal', precision: 12, scale: 0, default: 0 })
   price: number;
 
