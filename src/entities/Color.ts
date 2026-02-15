@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { ProductColor } from './ProductColor.js';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Relation } from 'typeorm';
+import type { ProductColor } from './ProductColor.js';
 
 @Entity('colors')
 export class Color {
@@ -12,6 +12,6 @@ export class Color {
     @Column({ type: 'varchar', length: 10, unique: true })
     hex_code: string;
 
-    @OneToMany(() => ProductColor, (pc) => pc.color)
-    productColors: ProductColor[];
+    @OneToMany('ProductColor', 'color')
+    productColors: Relation<ProductColor>[];
 }

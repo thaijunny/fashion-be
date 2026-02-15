@@ -4,10 +4,11 @@ import {
   Column,
   CreateDateColumn,
   OneToMany,
+  Relation,
 } from 'typeorm';
-import { Project } from './Project.js';
-import { Order } from './Order.js';
-import { CartItem } from './CartItem.js';
+import type { Project } from './Project.js';
+import type { Order } from './Order.js';
+import type { CartItem } from './CartItem.js';
 
 @Entity('users')
 export class User {
@@ -41,12 +42,12 @@ export class User {
   @Column({ type: 'jsonb', default: [] })
   ai_images: string[];
 
-  @OneToMany(() => Project, (project) => project.user)
-  projects: Project[];
+  @OneToMany('Project', 'user')
+  projects: Relation<Project>[];
 
-  @OneToMany(() => Order, (order) => order.user)
-  orders: Order[];
+  @OneToMany('Order', 'user')
+  orders: Relation<Order>[];
 
-  @OneToMany(() => CartItem, (cartItem) => cartItem.user)
-  cart_items: CartItem[];
+  @OneToMany('CartItem', 'user')
+  cart_items: Relation<CartItem>[];
 }

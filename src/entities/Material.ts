@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { ProductMaterial } from './ProductMaterial.js';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Relation } from 'typeorm';
+import type { ProductMaterial } from './ProductMaterial.js';
 
 @Entity('materials')
 export class Material {
@@ -9,6 +9,6 @@ export class Material {
     @Column({ type: 'varchar', length: 100, unique: true })
     name: string;
 
-    @OneToMany(() => ProductMaterial, (pm) => pm.material)
-    productMaterials: ProductMaterial[];
+    @OneToMany('ProductMaterial', 'material')
+    productMaterials: Relation<ProductMaterial>[];
 }
